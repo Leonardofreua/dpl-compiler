@@ -1,0 +1,29 @@
+programa calcula_expressao;
+
+var
+    x, y, z: inteiro;
+    r: inteiro;
+    k: string;
+    j: string;
+    ch_sp_1: string;
+    ch_sp_2: string;
+
+{ Este é um comentário }
+
+inicio
+    x := 3;
+    y := 5;
+    r := (x + 7) * y;
+    k := "test with DOUBLE-QUOTES";
+    j := 'test with SIMPLE QUOTES';
+    ch_sp_1 := "+!@#$%¨&&*()_|?][{~^<>}-Q";
+    ch_sp_2 := '+!@#$%¨&&*()_|?][{~^<>}-Q';
+
+    escreva r;
+    escreva 5;
+    escreva 2 + 2;
+    escreva k;
+    escreva j;
+    escreva ch_sp_1;
+    escreva ch_sp_2;
+fim.
