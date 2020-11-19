@@ -36,8 +36,6 @@ from AST import (
     Empty,
 )
 
-from exceptions.error import ErrorCode
-
 
 class Handler(NodeVisitor):
     """Abstract-Syntax Tree (AST) already processed.

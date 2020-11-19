@@ -14,9 +14,12 @@
 
 from typing import NoReturn
 
-from Token import Token
-from visitor import NodeVisitor
+from Context import Context
 from symbols import SymbolTable, VarSymbol
+from Token import Token
+from TokenType import TokenType
+from TypeChecker import TypeChecker
+from visitor import NodeVisitor
 from AST import (
     Program,
     Block,
@@ -33,19 +36,26 @@ from AST import (
     Empty,
 )
 
-
 from exceptions.error import ErrorCode, SemanticError
 
 
 class SemanticHandler(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable()
+        self.type_checker = TypeChecker()
 
     def error(self, error_code: ErrorCode, token: Token, var_name: str) -> NoReturn:
         raise SemanticError(
             error_code=error_code,
             token=token,
-            message=f"{error_code.value} \n \t{token} \n \tIdentifies: '{var_name}'",
+            message=f"{error_code.value} \n \t{token} \n \tIdentifier: '{var_name}'",
+        )
+
+    def type_error(self, token: Token, first_type, second_type) -> NoReturn:
+        raise SemanticError(
+            error_code=ErrorCode.TYPE_ERROR,
+            token=token,
+            message=f"{ErrorCode.TYPE_ERROR.value} between {first_type} and {second_type}\n\t{token}",
         )
 
     def visit_Program(self, node: Program) -> None:
@@ -142,6 +152,36 @@ class SemanticHandler(NodeVisitor):
 
         self.visit(node.left)
         self.visit(node.right)
+
+        if isinstance(node.left, Var):
+            left_symbol = self.symbol_table.get_token(node.left.value)
+
+            if not self.type_checker.is_allowed_type(Context.BIN_OP, left_symbol):
+                if node.right.token.type == TokenType.ID:
+                    right_symbol = self.symbol_table.get_token(node.right.value)
+                    right_var_type = right_symbol.type.name
+                else:
+                    right_var_type = node.right.token.type.value
+                self.type_error(
+                    token=node.left.token,
+                    first_type=left_symbol.type.name,
+                    second_type=right_var_type,
+                )
+
+        if isinstance(node.right, Var):
+            right_symbol = self.symbol_table.get_token(node.right.value)
+
+            if not self.type_checker.is_allowed_type(Context.BIN_OP, right_symbol):
+                if node.left.token.type == TokenType.ID:
+                    left_symbol = self.symbol_table.get_token(node.left.value)
+                    left_var_type = left_symbol.type.name
+                else:
+                    left_var_type = node.left.token.type.value
+                self.type_error(
+                    token=node.right.token,
+                    first_type=left_var_type,
+                    second_type=right_symbol.type.name,
+                )
 
     def visit_UnaryOperator(self, node: UnaryOperator) -> None:
         """Calls the method that performs the Unary Operations.
