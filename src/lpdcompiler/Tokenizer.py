@@ -54,8 +54,7 @@ def _get_single_characters() -> List[str]:
     end_index = token_type_list.index(TokenType.RBRACE)
 
     singles_characters = [
-        toke_type.value
-        for toke_type in token_type_list[start_index:end_index + 1]
+        toke_type.value for toke_type in token_type_list[start_index : end_index + 1]
     ]
 
     return singles_characters
@@ -126,7 +125,7 @@ class Tokenizer:
         while (
             self.current_char is not None
             and self.current_char.isalnum()
-            or self.current_char == "_"
+            or self.current_char == TokenType.UNDER_SCORE.value
         ):
             value += self.current_char
             self.advance()
@@ -197,9 +196,9 @@ class Tokenizer:
 
         value = ""
         while (
-            self.current_char is not None and
-            self.current_char.isalpha() or
-            self.current_char in self.SINGLE_CHARACTERS
+            self.current_char is not None
+            and self.current_char.isalpha()
+            or self.current_char in self.SINGLE_CHARACTERS
         ):
             value += self.current_char
             self.advance()

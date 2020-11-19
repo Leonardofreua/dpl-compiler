@@ -24,7 +24,7 @@ class AST:
 
 class Program(AST):
     """Represents 'program' keyword and will be the root of the tree.
-    
+
     Args:
         name (str): Program name that is declared after the keyword 'PROGRAMA'.
         Example: ldp-program
@@ -59,7 +59,7 @@ class VarDeclaration(AST):
     """Represents a declaration of variable.
 
     Args:
-        var_node (Var): represents the variable informations, containing the Token 
+        var_node (Var): represents the variable informations, containing the Token
         object and value.
 
         type_node (Type): the type of the variable which represents the node in the tree
@@ -143,6 +143,18 @@ class String(AST):
         self.value = token.value
 
 
+class Boolean(AST):
+    def __init__(self, token: Token) -> None:
+        """Represents the BOOLEAN type of the AST
+
+        Args:
+            token (Token): a specific token: Token(BOOLEAN, verdadeiro)
+            or Token(BOOLEAN, falso)
+        """
+        self.token = token
+        self.value = token.value
+
+
 class Compound(AST):
     """Represents a 'programa ... fim' block."""
 
@@ -155,8 +167,8 @@ class Assign(AST):
     an expression.
 
     Args:
-        left (Var): the variable object, containing the Token informations and value        
-        operator (Token): token ':=' and it's information from the Token object        
+        left (Var): the variable object, containing the Token informations and value
+        operator (Token): token ':=' and it's information from the Token object
         right (Num): a number that makes up the expression to be assigned to variable
     """
 
@@ -170,7 +182,7 @@ class Var(AST):
     """The Var node is constructed out of ID token.
 
     Args:
-        token (Token): A specific token. 
+        token (Token): A specific token.
             Example: Token(TokenType.ID, 'Part11', position=1:17)
     """
 

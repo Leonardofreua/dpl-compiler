@@ -31,6 +31,7 @@ from AST import (
     UnaryOperator,
     Num,
     String,
+    Boolean,
     Var,
     VarDeclaration,
 )
@@ -170,15 +171,17 @@ class Parser:
             self.consume_token(TokenType.INTEGER)
         elif self.current_token.type == TokenType.REAL:
             self.consume_token(TokenType.REAL)
-        else:
+        elif self.current_token.type == TokenType.STRING:
             self.consume_token(TokenType.STRING)
+        else:
+            self.consume_token(TokenType.BOOLEAN)
 
         node = Type(token)
         return node
 
     def compound_statement(self) -> Compound:
         """Assembles a list with all compound statements between INICIO and FIM.
-                
+
         Grammar: <compound_statement> ::= INICIO <statement_list> FIM
 
         Returns:
@@ -215,7 +218,7 @@ class Parser:
     def statement(self) -> Union[Compound, Assign, Empty]:
         """Assembles a specific statement containing a compound, assignment or
         an empty statement.
-        
+
         Grammar: <statement> ::= <compound_statement>
                                | <assignment_statement>
                                | empty
@@ -258,7 +261,6 @@ class Parser:
 
     def assignment_statement(self) -> Assign:
         """Assembles an Assign object containing an expression.
-      
         Grammar: <variable> ::= ASSIGN <expression>.
 
         Returns:
@@ -271,6 +273,10 @@ class Parser:
 
         if self.current_token.type == TokenType.STRING_CONST:
             right = self.string_parser()
+        elif self.current_token.type == TokenType.FALSE:
+            right = self.bool_false_parser()
+        elif self.current_token.type == TokenType.TRUE:
+            right = self.bool_true_parser()
         else:
             right = self.expression_parser()
         node = Assign(left, token, right)
@@ -402,6 +408,30 @@ class Parser:
         node = String(token)
         return node
 
+    def bool_false_parser(self) -> Boolean:
+        """Boolean parser for the literal FALSE.
+
+        Returns:
+            Boolean: a token node that represeting a FALSE boolean type
+        """
+
+        token = self.current_token
+        self.consume_token(TokenType.FALSE)
+        node = Boolean(token)
+        return node
+
+    def bool_true_parser(self) -> Boolean:
+        """Boolean parser for the literal TRUE.
+
+        Returns:
+            Boolean: a token node that represeting a TRUE boolean type
+        """
+
+        token = self.current_token
+        self.consume_token(TokenType.TRUE)
+        node = Boolean(token)
+        return node
+
     def parse(self) -> Program:
         """Start the parser.
 
@@ -414,4 +444,3 @@ class Parser:
             self.error(error_code=ErrorCode.UNEXPECTED_TOKEN, token=self.current_token)
 
         return node
-

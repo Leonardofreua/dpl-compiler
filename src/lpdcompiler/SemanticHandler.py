@@ -29,6 +29,7 @@ from AST import (
     VarDeclaration,
     Num,
     String,
+    Boolean,
     Empty,
 )
 
@@ -158,6 +159,9 @@ class SemanticHandler(NodeVisitor):
         pass
 
     def visit_String(self, node: String) -> None:
+        pass
+
+    def visit_Boolean(self, node: Boolean) -> None:
         pass
 
     def visit_Empty(self, node: Empty) -> None:

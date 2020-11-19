@@ -7,6 +7,8 @@ var
     j: string;
     ch_sp_1: string;
     ch_sp_2: string;
+    bl_false_1: booleano;
+    bl_true_2: booleano;
 
 { Este é um comentário }
 
@@ -18,6 +20,8 @@ inicio
     j := 'test with SIMPLE QUOTES';
     ch_sp_1 := "+!@#$%¨&&*()_|?][{~^<>}-Q";
     ch_sp_2 := '+!@#$%¨&&*()_|?][{~^<>}-Q';
+    bl_false_1 := falso;
+    bl_true_2 := verdadeiro;
 
     escreva r;
     escreva 5;
@@ -26,4 +30,7 @@ inicio
     escreva j;
     escreva ch_sp_1;
     escreva ch_sp_2;
+    escreva bl_false_1;
+    escreva bl_true_2;
 fim.
+

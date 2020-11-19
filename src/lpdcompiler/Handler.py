@@ -32,6 +32,7 @@ from AST import (
     Type,
     Num,
     String,
+    Boolean,
     Empty,
 )
 
@@ -49,7 +50,6 @@ class Handler(NodeVisitor):
     def __init__(self, tree: Program) -> None:
         self.tree = tree
         self.GLOBAL_MEMORY = {}
-
 
     def visit_Program(self, node: Program) -> None:
         """Visit the Block node in AST and call it.
@@ -141,6 +141,18 @@ class Handler(NodeVisitor):
 
         Returns:
             str: a string (literal)
+        """
+
+        return node.value
+
+    def visit_Boolean(self, node: Boolean) -> bool:
+        """Returns a bool (literal) of the a tree node.
+
+        Args:
+            nodo (Boolean): a token represeting a literal boolean type
+
+        Returns:
+            bool: a bool (literal)
         """
 
         return node.value

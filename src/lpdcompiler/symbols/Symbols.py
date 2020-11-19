@@ -26,7 +26,10 @@ class BuiltinTypeSymbol(Symbol):
     """Primitive type stamp.
 
     Args:
-        name (str): primitive type name. Ex.: INTEIRO, REAL, STRING
+        name (str): primitive type name:INTEIRO,
+                                        REAL,
+                                        STRING,
+                                        BOOLEAN
     """
 
     def __init__(self, name: str) -> None:

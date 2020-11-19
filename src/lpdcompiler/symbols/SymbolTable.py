@@ -47,6 +47,7 @@ class SymbolTable:
         self.add_token(BuiltinTypeSymbol("INTEIRO"))
         self.add_token(BuiltinTypeSymbol("REAL"))
         self.add_token(BuiltinTypeSymbol("STRING"))
+        self.add_token(BuiltinTypeSymbol("BOOLEANO"))
 
     def add_token(self, symbol):  # type: (Union[BuiltinTypeSymbol, VarSymbol])-> None
         """Add a new symbol in the table.
