@@ -15,10 +15,9 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-from typing import List, NoReturn, Union
+from typing import List, Union
 
 from TokenType import TokenType
-from Token import Token
 from AST import (
     Assign,
     BinaryOperator,
@@ -36,7 +35,8 @@ from AST import (
     VarDeclaration,
 )
 
-from exceptions.error import ParserError, ErrorCode
+from exceptions import ParserErrorHandler
+from exceptions import ErrorCode
 
 
 class Parser:
@@ -44,13 +44,6 @@ class Parser:
         self.tokenizer = tokenizer
         # set current token to the first token taken from the file
         self.current_token = self.tokenizer.get_next_token()
-
-    def error(self, error_code: ErrorCode, token: Token) -> NoReturn:
-        raise ParserError(
-            error_code=error_code,
-            token=token,
-            message=f"{error_code.value} \n\t{token}",
-        )
 
     def consume_token(self, token_type: TokenType) -> None:
         """Compare the current token type with the token_type parameter and if they match
@@ -68,7 +61,9 @@ class Parser:
         if self.current_token.type == token_type:
             self.current_token = self.tokenizer.get_next_token()
         else:
-            self.error(error_code=ErrorCode.UNEXPECTED_TOKEN, token=self.current_token)
+            ParserErrorHandler.error(
+                error_code=ErrorCode.UNEXPECTED_TOKEN, token=self.current_token
+            )
 
     def program(self) -> Program:
         """This object represents the program body.
@@ -441,6 +436,8 @@ class Parser:
         node = self.program()
 
         if self.current_token.type != TokenType.EOF:
-            self.error(error_code=ErrorCode.UNEXPECTED_TOKEN, token=self.current_token)
+            ParserErrorHandler.error(
+                error_code=ErrorCode.UNEXPECTED_TOKEN, token=self.current_token
+            )
 
         return node

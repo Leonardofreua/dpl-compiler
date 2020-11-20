@@ -12,7 +12,6 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-from typing import NoReturn
 
 from Context import Context
 from symbols import SymbolTable, VarSymbol
@@ -36,30 +35,14 @@ from AST import (
     Empty,
 )
 
-from exceptions.error import ErrorCode, SemanticError
+from exceptions import SemanticErrorHandler
+from exceptions import ErrorCode
 
 
-class SemanticHandler(NodeVisitor):
+class SymbolTableHandler(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.type_checker = TypeChecker()
-
-    def error(self, error_code: ErrorCode, token: Token, var_name: str) -> NoReturn:
-        raise SemanticError(
-            error_code=error_code,
-            token=token,
-            message=f"{error_code.value} \n \t{token} \n \tIdentifier: '{var_name}'",
-        )
-
-    def type_error(self, *args, token: Token) -> NoReturn:
-        formatted_variable_types = (
-            " and ".join(args) if len(args) == 2 else ", ".join(args)
-        )
-        raise SemanticError(
-            error_code=ErrorCode.TYPE_ERROR,
-            token=token,
-            message=f"{ErrorCode.TYPE_ERROR.value}: {formatted_variable_types}\n \t{token}",
-        )
 
     def visit_Program(self, node: Program) -> None:
         """Visit the Block node in AST and call it.
@@ -97,7 +80,7 @@ class SemanticHandler(NodeVisitor):
         var_symbol = VarSymbol(var_name, type_symbol)
 
         if self.symbol_table.get_token(var_name) is not None:
-            self.error(
+            SemanticErrorHandler.error(
                 error_code=ErrorCode.DUPLICATE_ID,
                 token=node.var_node.token,
                 var_name=var_name,
@@ -141,7 +124,7 @@ class SemanticHandler(NodeVisitor):
         var_symbol = self.symbol_table.get_token(var_name)
 
         if var_symbol is None:
-            self.error(
+            SemanticErrorHandler.error(
                 error_code=ErrorCode.ID_NOT_FOUND, token=node.token, var_name=var_name
             )
 
@@ -166,7 +149,7 @@ class SemanticHandler(NodeVisitor):
                 else:
                     right_var_type = node.right.token.type.value
 
-                self.type_error(
+                SemanticErrorHandler.type_error(
                     left_symbol.type.name, right_var_type, token=node.left.token
                 )
 
@@ -180,7 +163,7 @@ class SemanticHandler(NodeVisitor):
                 else:
                     left_var_type = node.left.token.type.value
 
-                self.type_error(
+                SemanticErrorHandler.type_error(
                     left_var_type, right_symbol.type.name, token=node.right.token
                 )
 
@@ -200,7 +183,7 @@ class SemanticHandler(NodeVisitor):
                 self.type_error(expr_symbol.type.name, token=node.expression.token)
 
     def visit_Writeln(self, node: Writeln) -> None:
-        pass
+        self.visit(node.content)
 
     def visit_Num(self, node: Num) -> None:
         pass

@@ -17,11 +17,12 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-from typing import Optional, NoReturn, List
+from typing import Optional, List
 
 from Token import Token
 from TokenType import TokenType
-from exceptions.error import TokenizeError
+
+from exceptions import TokenizerErrorHandler
 
 
 def _get_reserved_keywords() -> dict:
@@ -78,10 +79,6 @@ class Tokenizer:
         # Token line and column number
         self.t_line = 1
         self.t_column = 1
-
-    def error(self) -> NoReturn:
-        msg = f"Tokenize error on {self.current_char} **line: {self.t_line} **column: {self.t_column}"
-        raise TokenizeError(message=msg)
 
     def advance(self) -> None:
         """Advance the 'pos' pointer and set the 'current_char' variable"""
@@ -258,7 +255,9 @@ class Tokenizer:
             try:
                 token_type = TokenType(self.current_char)
             except ValueError:
-                self.error()
+                TokenizerErrorHandler.error(
+                    self.current_char, self.t_line, self.t_column
+                )
             else:
                 token = Token(
                     type=token_type,

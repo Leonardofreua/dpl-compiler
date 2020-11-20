@@ -1,1 +1,2 @@
-from .error import TokenizeError, ParserError, ErrorCode
+from .error import ErrorCode, TokenizeError, ParserError, SemanticError
+from .erroHandler import TokenizerErrorHandler, ParserErrorHandler, SemanticErrorHandler
