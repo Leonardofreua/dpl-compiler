@@ -15,6 +15,7 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from Token import Token
 from typing import List, Union
 
 from TokenType import TokenType
@@ -35,7 +36,7 @@ from AST import (
     VarDeclaration,
 )
 
-from exceptions import ParserErrorHandler
+from exceptions import ParserErrorHandler, SemanticErrorHandler
 from exceptions import ErrorCode
 
 
@@ -192,7 +193,7 @@ class Parser:
 
         return root
 
-    def statement_list(self) -> List[Assign]:
+    def statement_list(self) -> List[Union[Compound, Writeln, Assign, Empty]]:
         """Assembles a list with statements (ASSIGNS).
 
         Grammar: <statement_list> ::= <statement>
@@ -210,7 +211,7 @@ class Parser:
 
         return results
 
-    def statement(self) -> Union[Compound, Assign, Empty]:
+    def statement(self) -> Union[Compound, Writeln, Assign, Empty]:
         """Assembles a specific statement containing a compound, assignment or
         an empty statement.
 
@@ -247,6 +248,10 @@ class Parser:
 
         if self.current_token.type == TokenType.STRING_CONST:
             content = self.string_parser()
+        elif self.current_token.type == TokenType.TRUE:
+            content = self.bool_true_parser()
+        elif self.current_token.type == TokenType.FALSE:
+            content = self.bool_false_parser()
         else:
             content = self.expression_parser()
 
@@ -314,6 +319,10 @@ class Parser:
         """
 
         token = self.current_token
+
+        if token.type in [TokenType.TRUE, TokenType.FALSE]:
+            SemanticErrorHandler.type_error(TokenType.BOOLEAN.value, token=token)
+
         if token.type == TokenType.PLUS:
             self.consume_token(TokenType.PLUS)
             node = UnaryOperator(token, self.factor())

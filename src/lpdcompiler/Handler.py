@@ -14,9 +14,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-from typing import Union, Optional, NoReturn
+from typing import Union, Optional
 
-from Token import Token
 from visitor import NodeVisitor
 from TokenType import TokenType
 from AST import (

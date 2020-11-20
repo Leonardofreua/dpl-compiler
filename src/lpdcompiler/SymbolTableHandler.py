@@ -12,10 +12,8 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-
 from Context import Context
 from symbols import SymbolTable, VarSymbol
-from Token import Token
 from TokenType import TokenType
 from TypeChecker import TypeChecker
 from visitor import NodeVisitor
@@ -142,7 +140,9 @@ class SymbolTableHandler(NodeVisitor):
         if isinstance(node.left, Var):
             left_symbol = self.symbol_table.get_token(node.left.value)
 
-            if not self.type_checker.is_allowed_type(Context.BIN_OP, left_symbol):
+            if not self.type_checker.is_allowed_type(
+                Context.BIN_OP, left_symbol.type.name
+            ):
                 if node.right.token.type == TokenType.ID:
                     right_symbol = self.symbol_table.get_token(node.right.value)
                     right_var_type = right_symbol.type.name
@@ -156,7 +156,9 @@ class SymbolTableHandler(NodeVisitor):
         if isinstance(node.right, Var):
             right_symbol = self.symbol_table.get_token(node.right.value)
 
-            if not self.type_checker.is_allowed_type(Context.BIN_OP, right_symbol):
+            if not self.type_checker.is_allowed_type(
+                Context.BIN_OP, right_symbol.type.name
+            ):
                 if node.left.token.type == TokenType.ID:
                     left_symbol = self.symbol_table.get_token(node.left.value)
                     left_var_type = left_symbol.type.name
@@ -179,8 +181,12 @@ class SymbolTableHandler(NodeVisitor):
         if isinstance(node.expression, Var):
             expr_symbol = self.symbol_table.get_token(node.expression.value)
 
-            if not self.type_checker.is_allowed_type(Context.UN_OP, expr_symbol):
-                self.type_error(expr_symbol.type.name, token=node.expression.token)
+            if not self.type_checker.is_allowed_type(
+                Context.UN_OP, expr_symbol.type.name
+            ):
+                SemanticErrorHandler.type_error(
+                    expr_symbol.type.name, token=node.expression.token
+                )
 
     def visit_Writeln(self, node: Writeln) -> None:
         self.visit(node.content)
