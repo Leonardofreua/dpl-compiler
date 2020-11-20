@@ -51,11 +51,14 @@ class SemanticHandler(NodeVisitor):
             message=f"{error_code.value} \n \t{token} \n \tIdentifier: '{var_name}'",
         )
 
-    def type_error(self, token: Token, first_type, second_type) -> NoReturn:
+    def type_error(self, *args, token: Token) -> NoReturn:
+        formatted_variable_types = (
+            " and ".join(args) if len(args) == 2 else ", ".join(args)
+        )
         raise SemanticError(
             error_code=ErrorCode.TYPE_ERROR,
             token=token,
-            message=f"{ErrorCode.TYPE_ERROR.value} between {first_type} and {second_type}\n\t{token}",
+            message=f"{ErrorCode.TYPE_ERROR.value}: {formatted_variable_types}\n \t{token}",
         )
 
     def visit_Program(self, node: Program) -> None:
@@ -162,10 +165,9 @@ class SemanticHandler(NodeVisitor):
                     right_var_type = right_symbol.type.name
                 else:
                     right_var_type = node.right.token.type.value
+
                 self.type_error(
-                    token=node.left.token,
-                    first_type=left_symbol.type.name,
-                    second_type=right_var_type,
+                    left_symbol.type.name, right_var_type, token=node.left.token
                 )
 
         if isinstance(node.right, Var):
@@ -177,10 +179,9 @@ class SemanticHandler(NodeVisitor):
                     left_var_type = left_symbol.type.name
                 else:
                     left_var_type = node.left.token.type.value
+
                 self.type_error(
-                    token=node.right.token,
-                    first_type=left_var_type,
-                    second_type=right_symbol.type.name,
+                    left_var_type, right_symbol.type.name, token=node.right.token
                 )
 
     def visit_UnaryOperator(self, node: UnaryOperator) -> None:
@@ -191,6 +192,12 @@ class SemanticHandler(NodeVisitor):
         """
 
         self.visit(node.expression)
+
+        if isinstance(node.expression, Var):
+            expr_symbol = self.symbol_table.get_token(node.expression.value)
+
+            if not self.type_checker.is_allowed_type(Context.UN_OP, expr_symbol):
+                self.type_error(expr_symbol.type.name, token=node.expression.token)
 
     def visit_Writeln(self, node: Writeln) -> None:
         pass
