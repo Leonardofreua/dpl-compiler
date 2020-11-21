@@ -322,6 +322,8 @@ class Parser:
 
         if token.type in [TokenType.TRUE, TokenType.FALSE]:
             SemanticErrorHandler.type_error(TokenType.BOOLEAN.value, token=token)
+        elif token.type == TokenType.STRING_CONST:
+            SemanticErrorHandler.type_error(TokenType.STRING.value, token=token)
 
         if token.type == TokenType.PLUS:
             self.consume_token(TokenType.PLUS)

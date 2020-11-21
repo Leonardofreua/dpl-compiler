@@ -1,4 +1,4 @@
-from typing import NoReturn
+from typing import Union, NoReturn
 
 from Token import Token
 from exceptions import ErrorCode, TokenizeError, ParserError, SemanticError
@@ -40,4 +40,12 @@ class SemanticErrorHandler:
             error_code=ErrorCode.TYPE_ERROR,
             token=token,
             message=f"{ErrorCode.TYPE_ERROR.value}: {formatted_variable_types}\n \t{token}",
+        )
+
+    @classmethod
+    def error_zero_division(cls, value_type: Union[float, int]) -> NoReturn:
+        raise SemanticError(
+            error_code=ErrorCode.ZERO_DIVISION,
+            token=value_type,
+            message=f"\n\t{ErrorCode.ZERO_DIVISION.value}: {value_type} division by zero",
         )

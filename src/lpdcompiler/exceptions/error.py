@@ -6,6 +6,7 @@ class ErrorCode(Enum):
     ID_NOT_FOUND = "Identifier not found"
     DUPLICATE_ID = "Duplicate id found"
     TYPE_ERROR = "Unsupported type(s) of operation"
+    ZERO_DIVISION = "Zero division"
 
 
 class Error(Exception):
