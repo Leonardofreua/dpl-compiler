@@ -37,7 +37,7 @@ from exceptions import SemanticErrorHandler
 from exceptions import ErrorCode
 
 
-class SymbolTableHandler(NodeVisitor):
+class SemanticHandler(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.type_checker = TypeChecker()
@@ -137,8 +137,13 @@ class SymbolTableHandler(NodeVisitor):
         self.visit(node.left)
         self.visit(node.right)
 
-        if isinstance(node.left, Var):
+        if isinstance(node.left, (Var, Boolean, String)):
             left_symbol = self.symbol_table.get_token(node.left.value)
+
+            if left_symbol is None:
+                SemanticErrorHandler.type_error(
+                    node.left.token.type.name, token=node.left.token
+                )
 
             if not self.type_checker.is_allowed_type(
                 Context.BIN_OP, left_symbol.type.name
@@ -153,8 +158,13 @@ class SymbolTableHandler(NodeVisitor):
                     left_symbol.type.name, right_var_type, token=node.left.token
                 )
 
-        if isinstance(node.right, Var):
+        if isinstance(node.right, (Var, Boolean, String)):
             right_symbol = self.symbol_table.get_token(node.right.value)
+
+            if right_symbol is None:
+                SemanticErrorHandler.type_error(
+                    node.right.token.type.name, token=node.right.token
+                )
 
             if not self.type_checker.is_allowed_type(
                 Context.BIN_OP, right_symbol.type.name
@@ -178,8 +188,13 @@ class SymbolTableHandler(NodeVisitor):
 
         self.visit(node.expression)
 
-        if isinstance(node.expression, Var):
+        if isinstance(node.expression, (Var, Boolean, String)):
             expr_symbol = self.symbol_table.get_token(node.expression.value)
+
+            if expr_symbol is None:
+                SemanticErrorHandler.type_error(
+                    node.expression.token.type.name, token=node.expression.token
+                )
 
             if not self.type_checker.is_allowed_type(
                 Context.UN_OP, expr_symbol.type.name

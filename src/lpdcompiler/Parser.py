@@ -15,7 +15,6 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-from Token import Token
 from typing import List, Union
 
 from TokenType import TokenType
@@ -36,7 +35,7 @@ from AST import (
     VarDeclaration,
 )
 
-from exceptions import ParserErrorHandler, SemanticErrorHandler
+from exceptions import ParserErrorHandler
 from exceptions import ErrorCode
 
 
@@ -70,11 +69,11 @@ class Parser:
         """This object represents the program body.
 
         Grammar: PROGRAMA ::=
-                    <variable> SEMI 
+                    <variable> SEMI
                  BLOCK DOT
 
         Returns:
-            Program: Contains the name of the program (Ex.: calcula_expressao) and the 
+            Program: Contains the name of the program (Ex.: calcula_expressao) and the
             Block object containing the source code body.
         """
 
@@ -284,7 +283,7 @@ class Parser:
         return node
 
     def variable(self) -> Var:
-        """A token labeled with type ID (identifies uniqueness) representing the variables and 
+        """A token labeled with type ID (identifies uniqueness) representing the variables and
         the program name (things that must be unique).
 
         Grammar: <variable> ::= ID.
@@ -302,7 +301,9 @@ class Parser:
 
         return Empty()
 
-    def factor(self) -> Union[Num, BinaryOperator, UnaryOperator, Var, None]:
+    def factor(
+        self,
+    ) -> Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, Var, None]:
         """The factor method performs the orchestration between the arithmetic operations.
 
         Grammar: PLUS <factor>
@@ -314,17 +315,11 @@ class Parser:
 
         Returns:
             Union[BinaryOperator, UnaryOperator, Num, Var, None]: This can be an 
-            UnaryOperator (Ex.: --3, 3 -- 5), a number (Ex.: 1, 2, ...) 
-            or an BinaryOperator expression ((x + 7) * y) 
+            UnaryOperator (Ex.: --3, 3 -- 5), a number (Ex.: 1, 2, ...)
+                or an BinaryOperator expression ((x + 7) * y)
         """
 
         token = self.current_token
-
-        if token.type in [TokenType.TRUE, TokenType.FALSE]:
-            SemanticErrorHandler.type_error(TokenType.BOOLEAN.value, token=token)
-        elif token.type == TokenType.STRING_CONST:
-            SemanticErrorHandler.type_error(TokenType.STRING.value, token=token)
-
         if token.type == TokenType.PLUS:
             self.consume_token(TokenType.PLUS)
             node = UnaryOperator(token, self.factor())
@@ -344,18 +339,29 @@ class Parser:
             node = self.expression_parser()
             self.consume_token(TokenType.RPAREN)
             return node
+        elif token.type == TokenType.TRUE:
+            self.consume_token(TokenType.TRUE)
+            return Boolean(token)
+        elif token.type == TokenType.FALSE:
+            self.consume_token(TokenType.FALSE)
+            return Boolean(token)
+        elif token.type == TokenType.STRING_CONST:
+            self.consume_token(TokenType.STRING_CONST)
+            return String(token)
         else:
             node = self.variable()
             return node
 
-    def term(self) -> Union[Num, BinaryOperator, UnaryOperator, Var, None]:
-        """Perform the Binary operations between Multiplication, Integer and Float 
+    def term(
+        self,
+    ) -> Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]:
+        """Perform the Binary operations between Multiplication, Integer and Float
         Division tokens.
 
         Grammar: <term> ::= <factor> ((MUL | INTEGER_DIV | FLOAT_DIV) <factor>)*
 
         Returns:
-            Union[Num, BinaryOperator, UnaryOperator, Var, None]: a token with the binary 
+            Union[Num, BinaryOperator, UnaryOperator, Var, None]: a token with the binary
             operation result
         """
 
@@ -377,7 +383,9 @@ class Parser:
 
         return node
 
-    def expression_parser(self) -> Union[Num, BinaryOperator, UnaryOperator, Var, None]:
+    def expression_parser(
+        self,
+    ) -> Union[Var, Boolean, String, Num, BinaryOperator, UnaryOperator, None]:
         """Arithmetic expression parser.
 
         Grammar: <expression>   ::= <term> ((PLUS | MINUS) <term>)*
@@ -385,7 +393,7 @@ class Parser:
                  <factor>       ::= INTEGER | LPAREN <expression> RPAREN
 
         Returns:
-            Union[Num, BinaryOperator, UnaryOperator, Var, None]: a result assignment 
+            Union[Num, BinaryOperator, UnaryOperator, Var, None]: a result assignment
             to a variable, this is can be a number, binary or unary operation or another
             variable 
         """

@@ -29,7 +29,7 @@ class Program(AST):
         name (str): Program name that is declared after the keyword 'PROGRAMA'.
         Example: ldp-program
 
-        block (Block): The block object is compounded of declaration of variables (VAR) 
+        block (Block): The block object is compounded of declaration of variables (VAR)
         and the assignments made within 'INICIO'
     """
 
@@ -90,14 +90,16 @@ class BinaryOperator(AST):
               6 / 2 + 2
 
     Args:
-        left: left number of operation
-        operator: arithmetic operators (+, -, *, /)
-        right: right number of operation
+        left (Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]):
+            left number of operation
+        operator (Token): arithmetic operators (+, -, *, /)
+        right (Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]):
+            right number of operation
     """
 
     def __init__(
         self, left, operator, right
-    ):  # type: (Union[Num, BinaryOperator, UnaryOperator, None], Token, Union[Num, BinaryOperator, UnaryOperator, None]) -> None
+    ):  # type: (Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None], Token, Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]) -> None
         self.left = left
         self.token = self.operator = operator
         self.right = right
@@ -110,13 +112,14 @@ class UnaryOperator(AST):
               + - 2 = -2
 
     Args:
-        operator: arithmetic operators (+ or -)
-        expression: tree node
+        operator (Token): arithmetic operators (+ or -)
+        expression (Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]):
+            tree node
     """
 
     def __init__(
         self, operator, expression
-    ):  # type: (Token, Union[Num, BinaryOperator, UnaryOperator, None]) -> None
+    ):  # type: (Token, Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]) -> None
         self.token = self.operator = operator
         self.expression = expression
 
@@ -162,22 +165,6 @@ class Compound(AST):
         self.children: List["Assign"] = []
 
 
-class Assign(AST):
-    """Represents the assignment between a variable, the operator ':=' and
-    an expression.
-
-    Args:
-        left (Var): the variable object, containing the Token informations and value
-        operator (Token): token ':=' and it's information from the Token object
-        right (Num): a number that makes up the expression to be assigned to variable
-    """
-
-    def __init__(self, left: "Var", operator: Token, right: "Num") -> None:
-        self.left = left
-        self.token = self.operator = operator
-        self.right = right
-
-
 class Var(AST):
     """The Var node is constructed out of ID token.
 
@@ -191,16 +178,39 @@ class Var(AST):
         self.value = token.value
 
 
+class Assign(AST):
+    """Represents the assignment between a variable, the operator ':=' and
+    an expression.
+
+    Args:
+        left (Var): the variable object, containing the Token informations and value
+        operator (Token): token ':=' and it's information from the Token object
+        right (Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None]):
+            a number that makes up the expression to be assigned to variable
+    """
+
+    def __init__(
+        self,
+        left: Var,
+        operator: Token,
+        right: Union[Var, Num, Boolean, String, BinaryOperator, UnaryOperator, None],
+    ) -> None:
+        self.left = left
+        self.token = self.operator = operator
+        self.right = right
+
+
 class Writeln(AST):
     """Represents the 'escreva (Writeln)' command
 
     Args:
-        content (Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator]): the 'escreva (Writeln)' content
+        content (Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]):
+            the 'escreva (Writeln)' content
     """
 
     def __init__(
         self, content
-    ):  # type: (Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator]) -> None
+    ):  # type: (Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]) -> None
         self.content = content
 
 

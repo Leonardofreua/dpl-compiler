@@ -1,6 +1,9 @@
+from Token import Token
 from TokenType import TokenType
 from Context import Context
 from symbols import VarSymbol
+
+from exceptions import SemanticErrorHandler
 
 
 class TypeChecker:
