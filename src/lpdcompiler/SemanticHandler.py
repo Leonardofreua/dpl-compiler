@@ -137,6 +137,12 @@ class SemanticHandler(NodeVisitor):
         self.visit(node.left)
         self.visit(node.right)
 
+        # Zero division
+        if isinstance(node.right, Num) and node.right.value == 0:
+            while isinstance(node.left, UnaryOperator):
+                node.left = node.left.expression
+            SemanticErrorHandler.error_zero_division(node.left.value)
+
         if isinstance(node.left, (Var, Boolean, String)):
             left_symbol = self.symbol_table.get_token(node.left.value)
 

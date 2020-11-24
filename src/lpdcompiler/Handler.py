@@ -34,7 +34,6 @@ from AST import (
     Boolean,
     Empty,
 )
-from exceptions import SemanticErrorHandler
 
 
 class Handler(NodeVisitor):
@@ -94,21 +93,9 @@ class Handler(NodeVisitor):
         elif node.operator.type == TokenType.MUL:
             return self.visit(node.left) * self.visit(node.right)
         elif node.operator.type == TokenType.INTEGER_DIV:
-            left = self.visit(node.left)
-            right = self.visit(node.right)
-
-            if right == 0:
-                SemanticErrorHandler.error_zero_division(left)
-
-            return left // right
+            return self.visit(node.left) // self.visit(node.right)
         elif node.operator.type == TokenType.FLOAT_DIV:
-            left = float(self.visit(node.left))
-            right = float(self.visit(node.right))
-
-            if right == 0:
-                SemanticErrorHandler.error_zero_division(left)
-
-            return left / right
+            return float(self.visit(node.left)) / float(self.visit(node.right))
 
         return None
 
