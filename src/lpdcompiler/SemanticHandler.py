@@ -204,7 +204,23 @@ class SemanticHandler(NodeVisitor):
                 )
 
     def visit_Writeln(self, node: Writeln) -> None:
-        self.visit(node.content)
+        """Calls the methods according to content type and check if they are valid.
+
+        Args:
+            node (Writeln): content passed in the command escreva
+        """
+
+        for index, item in enumerate(node.content):
+            previous_content = node.content[index - 1]
+            if previous_content == item:
+                self.visit(item)
+            elif isinstance(
+                previous_content, (UnaryOperator, BinaryOperator)
+            ) and not self.type_checker.is_allowed_type(Context.BIN_OP, item.value):
+                node_name = previous_content.__class__.__name__
+                SemanticErrorHandler.type_error(
+                    node_name, item.token.type.name, token=item.token
+                )
 
     def visit_Num(self, node: Num) -> None:
         pass

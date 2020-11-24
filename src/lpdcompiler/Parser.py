@@ -237,22 +237,25 @@ class Parser:
     def writeln_statement(self) -> Writeln:
         """Assembles the 'escreva (Writeln)' command content.
 
-        Grammar: <writeln_statement> ::= <expression>
+        Grammar: <writeln_statement> ::= <content>
 
         Returns:
-            Writeln: object containing the expression
+            Writeln: object containing the content
         """
 
+        content: List[
+            Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]
+        ] = []
         self.consume_token(TokenType.WRITELN)
-
-        if self.current_token.type == TokenType.STRING_CONST:
-            content = self.string_parser()
-        elif self.current_token.type == TokenType.TRUE:
-            content = self.bool_true_parser()
-        elif self.current_token.type == TokenType.FALSE:
-            content = self.bool_false_parser()
-        else:
-            content = self.expression_parser()
+        while self.current_token.type != TokenType.SEMI:
+            if self.current_token.type == TokenType.STRING_CONST:
+                content.append(self.string_parser())
+            elif self.current_token.type == TokenType.TRUE:
+                content.append(self.bool_true_parser())
+            elif self.current_token.type == TokenType.FALSE:
+                content.append(self.bool_false_parser())
+            else:
+                content.append(self.expression_parser())
 
         node = Writeln(content)
 

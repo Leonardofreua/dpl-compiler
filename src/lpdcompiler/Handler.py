@@ -208,14 +208,15 @@ class Handler(NodeVisitor):
         return value
 
     def visit_Writeln(self, node: Writeln) -> None:
-        """Prints content on the screen according to what was passed in the command escreva.
+        """Prints content on the screen according to what was passed in the command
+        escreva.
 
         Args:
             node (Writeln): content passed in the command escreva
         """
 
-        value = self.visit(node.content)
-        print(value)
+        for content in node.content:
+            print(self.visit(content))
 
     def visit_Empty(self, node: Empty) -> None:
         pass

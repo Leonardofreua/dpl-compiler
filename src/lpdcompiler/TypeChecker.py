@@ -3,8 +3,6 @@ from TokenType import TokenType
 from Context import Context
 from symbols import VarSymbol
 
-from exceptions import SemanticErrorHandler
-
 
 class TypeChecker:
     def is_allowed_type(self, context: Context, variable_type: VarSymbol) -> bool:

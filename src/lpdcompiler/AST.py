@@ -201,16 +201,16 @@ class Assign(AST):
 
 
 class Writeln(AST):
-    """Represents the 'escreva (Writeln)' command
+    """Represents the 'escreva (Writeln)' command.
 
     Args:
-        content (Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]):
+        content (List[Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]]):
             the 'escreva (Writeln)' content
     """
 
     def __init__(
         self, content
-    ):  # type: (Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]) -> None
+    ):  # type: (List[Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]]) -> None
         self.content = content
 
 
