@@ -47,14 +47,14 @@ def start():
         semantic_handler = SemanticHandler()
         semantic_handler.visit(tree)
 
-        print(semantic_handler.symbol_table.list_tokens())
         print(semantic_handler.symbol_table)
-    except (ParserError, TokenizeError, SemanticError) as e:
-        print(e.message)
-        sys.exit(1)
+        print(semantic_handler.symbol_table.list_tokens())
 
-    handler = Handler(tree)
-    handler.handle()
+        handler = Handler(tree)
+        handler.handle()
+    except (ParserError, TokenizeError, SemanticError) as err:
+        print(err.message)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

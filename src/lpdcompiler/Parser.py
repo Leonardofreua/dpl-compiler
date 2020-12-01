@@ -271,19 +271,44 @@ class Parser:
 
         left = self.variable()
         token = self.current_token
+        right_expressions: List[
+            Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]
+        ] = []
         self.consume_token(TokenType.ASSIGN)
 
-        if self.current_token.type == TokenType.STRING_CONST:
-            right = self.string_parser()
-        elif self.current_token.type == TokenType.FALSE:
-            right = self.bool_false_parser()
-        elif self.current_token.type == TokenType.TRUE:
-            right = self.bool_true_parser()
-        else:
-            right = self.expression_parser()
-        node = Assign(left, token, right)
+        while self.current_token.type != TokenType.SEMI:
+            if self.current_token.type == TokenType.STRING_CONST:
+                right_expressions.append(self.string_parser())
+            elif self.current_token.type == TokenType.FALSE:
+                right_expressions.append(self.bool_false_parser())
+            elif self.current_token.type == TokenType.TRUE:
+                right_expressions.append(self.bool_true_parser())
+            else:
+                right_expressions.append(self.expression_parser())
 
+        node = Assign(left, token, self._process_right_expressions(right_expressions))
         return node
+
+    def _process_right_expressions(
+        self,
+        right_expressions: List[
+            Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]
+        ],
+    ):
+        if len(right_expressions) == 1:
+            return right_expressions[0]
+
+        for index, item in enumerate(right_expressions):
+            next_item = right_expressions[index - 1]
+
+            if item.token.type in [
+                TokenType.STRING_CONST,
+                TokenType.FALSE,
+                TokenType.TRUE,
+            ] and isinstance(next_item, (BinaryOperator, UnaryOperator)):
+                return BinaryOperator(
+                    left=item, operator=next_item.operator, right=next_item
+                )
 
     def variable(self) -> Var:
         """A token labeled with type ID (identifies uniqueness) representing the variables and

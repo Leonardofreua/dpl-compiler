@@ -41,6 +41,7 @@ class SemanticHandler(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.type_checker = TypeChecker()
+        self.GLOBAL_MEMORY = {}
 
     def visit_Program(self, node: Program) -> None:
         """Visit the Block node in AST and call it.
@@ -107,8 +108,13 @@ class SemanticHandler(NodeVisitor):
             node (Assign): node containing the assignment content
         """
 
-        self.visit(node.right)
         self.visit(node.left)
+        self.visit(node.right)
+
+        if node.right is not None and not isinstance(
+            node.right, (UnaryOperator, BinaryOperator)
+        ):
+            self.GLOBAL_MEMORY[node.left.value] = node.right.token.type
 
     def visit_Var(self, node: Var) -> None:
         """"Search the variable in the Symbol Table and verify if it exists, if not found
@@ -151,17 +157,28 @@ class SemanticHandler(NodeVisitor):
                     node.left.token.type.name, token=node.left.token
                 )
 
-            if not self.type_checker.is_allowed_type(
+            left_symbol_token = self.GLOBAL_MEMORY[left_symbol.name]
+            variable_type_not_allowed = not self.type_checker.is_allowed_type(
                 Context.BIN_OP, left_symbol.type.name
-            ):
+            )
+            value_type_not_allowed = not self.type_checker.is_allowed_type(
+                Context.BIN_OP, left_symbol_token.name
+            )
+
+            if variable_type_not_allowed or value_type_not_allowed:
                 if node.right.token.type == TokenType.ID:
                     right_symbol = self.symbol_table.get_token(node.right.value)
                     right_var_type = right_symbol.type.name
                 else:
                     right_var_type = node.right.token.type.value
 
+                if value_type_not_allowed:
+                    left_var_type = left_symbol_token.name
+                else:
+                    left_var_type = left_symbol.type.name
+
                 SemanticErrorHandler.type_error(
-                    left_symbol.type.name, right_var_type, token=node.left.token
+                    left_var_type, right_var_type, token=node.left.token
                 )
 
         if isinstance(node.right, (Var, Boolean, String)):
@@ -172,17 +189,28 @@ class SemanticHandler(NodeVisitor):
                     node.right.token.type.name, token=node.right.token
                 )
 
-            if not self.type_checker.is_allowed_type(
+            right_symbol_token = self.GLOBAL_MEMORY[right_symbol.name]
+            variable_type_not_allowed = not self.type_checker.is_allowed_type(
                 Context.BIN_OP, right_symbol.type.name
-            ):
+            )
+            value_type_not_allowed = not self.type_checker.is_allowed_type(
+                Context.BIN_OP, right_symbol_token.name
+            )
+
+            if variable_type_not_allowed or value_type_not_allowed:
                 if node.left.token.type == TokenType.ID:
                     left_symbol = self.symbol_table.get_token(node.left.value)
                     left_var_type = left_symbol.type.name
                 else:
                     left_var_type = node.left.token.type.value
 
+                if value_type_not_allowed:
+                    right_var_type = right_symbol_token.name
+                else:
+                    right_var_type = right_symbol.type.name
+
                 SemanticErrorHandler.type_error(
-                    left_var_type, right_symbol.type.name, token=node.right.token
+                    left_var_type, right_var_type, token=node.right.token
                 )
 
     def visit_UnaryOperator(self, node: UnaryOperator) -> None:
