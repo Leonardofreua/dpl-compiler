@@ -338,6 +338,9 @@ class Parser:
                 | MINUS <factor>
                 | INTEGER_CONST
                 | REAL_CONST
+                | FALSE
+                | TRUE
+                | STRING_CONST
                 | LPAREN <expression> RPAREN
                 | <variable>
 
