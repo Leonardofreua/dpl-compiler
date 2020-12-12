@@ -19,6 +19,7 @@ from Tokenizer import Tokenizer
 from Parser import Parser
 from Handler import Handler
 from SemanticHandler import SemanticHandler
+from IREvaluator import IREvaluator
 
 from exceptions.error import ParserError, TokenizeError, SemanticError
 
@@ -47,11 +48,13 @@ def start():
         semantic_handler = SemanticHandler()
         semantic_handler.visit(tree)
 
-        print(semantic_handler.symbol_table)
-        print(semantic_handler.symbol_table.list_tokens())
+        # print(semantic_handler.symbol_table)
+        # print(semantic_handler.symbol_table.list_tokens())
 
         handler = Handler(tree)
         handler.handle()
+        evalutor = IREvaluator(tree, semantic_handler.symbol_table)
+        evalutor.evaluate(optimize=True, llvmdump=True)
     except (ParserError, TokenizeError, SemanticError) as err:
         print(err.message)
         sys.exit(1)
