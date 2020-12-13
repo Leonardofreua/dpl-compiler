@@ -39,30 +39,35 @@ class CodeGenerator(NodeVisitor):
         self.symbol_table = symbol_table
         self.expr_counter = 0
         self.str_counter = 0
+        self.bool_counter = 0
         self.func_name = ""
         self.GLOBAL_MEMORY = {}
 
-    def _create_instruct(self, typ) -> None:
-        if typ == 'str':
+    def _create_instruct(self, typ: str) -> None:
+        if typ == 'String':
             self.str_counter += 1
-            self.func_name = f"_string.{self.str_counter}"
+            self.func_name = f"_{typ}.{self.str_counter}"
             func_type = ir.FunctionType(ir.VoidType(), [])
 
-            fmt = "%s\n\0"
-            c_fmt = ir.Constant(ir.ArrayType(ir.IntType(8), len(fmt)),
-                                bytearray(fmt.encode("utf8")))
-            global_fmt = ir.GlobalVariable(
-                self.module, c_fmt.type, name="fstr")
-            global_fmt.linkage = 'internal'
-            global_fmt.global_constant = True
-            global_fmt.initializer = c_fmt
+            # fmt = "%s\n\0"
+            # c_fmt = ir.Constant(ir.ArrayType(ir.IntType(8), len(fmt)),
+            #                     bytearray(fmt.encode("utf8")))
+            # global_fmt = ir.GlobalVariable(
+            #     self.module, c_fmt.type, name="fstr")
+            # global_fmt.linkage = 'internal'
+            # global_fmt.global_constant = True
+            # global_fmt.initializer = c_fmt
+        elif typ == 'Boolean':
+            self.bool_counter += 1
+            self.func_name = f"_{typ}.{self.bool_counter}"
+            func_type = ir.FunctionType(ir.IntType(1), [])
         else:
             self.expr_counter += 1
-            self.func_name = f"_expr.{self.expr_counter}"
+            self.func_name = f"_{typ}_Expr.{self.expr_counter}"
             func_type = ir.FunctionType(ir.DoubleType(), [])
 
         main_func = ir.Function(self.module, func_type, self.func_name)
-        bb_entry = main_func.append_basic_block('entry')
+        bb_entry = main_func.append_basic_block("entry")
         self.builder = ir.IRBuilder(bb_entry)
 
     def visit_Program(self, node: Program) -> None:
@@ -107,15 +112,16 @@ class CodeGenerator(NodeVisitor):
             node (Assign): node containing the assignment content
         """
 
+        node_type = type(node.right).__name__
         if isinstance(node.right, String):
-            self._create_instruct('str')
+            self._create_instruct(node_type)
             self.visit(node.left)
             instruct = self.visit(node.right)
             c_str = self.builder.alloca(instruct.type)
             self.builder.store(instruct, c_str)
             self.builder.ret_void()
         else:
-            self._create_instruct('expr')
+            self._create_instruct(node_type)
             self.visit(node.left)
             instruct = self.visit(node.right)
             self.builder.ret(instruct)
@@ -191,7 +197,10 @@ class CodeGenerator(NodeVisitor):
             bool: a bool (literal)
         """
 
-        return node.value
+        if node.token.type == TokenType.FALSE:
+            return ir.Constant(ir.IntType(1), 0)
+        else:
+            return ir.Constant(ir.IntType(1), 1)
 
     def visit_Writeln(self, node: Writeln) -> None:
         """Prints content on the screen according to what was passed in the command
