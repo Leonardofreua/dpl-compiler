@@ -14,7 +14,7 @@ class IREvaluator:
         self.codegen = CodeGenerator(symbol_table)
         self.target = llvm.Target.from_default_triple()
 
-    def evaluate(self, optimize=True, llvmdump=False):
+    def evaluate(self, optimize, llvmdump):
         self.codegen.visit(self.tree)
 
         if llvmdump:
@@ -44,7 +44,8 @@ class IREvaluator:
                 print("\n======== Machine code\n")
                 print(target_machine.emit_assembly(llvmmod))
 
-            fptr = CFUNCTYPE(c_double)(ee.get_function_address(self.codegen.func_name))
+            fptr = CFUNCTYPE(c_double)(
+                ee.get_function_address(self.codegen.func_name))
 
             result = fptr()
             return result

@@ -18,8 +18,8 @@ inicio
     r := (x + 3) * y;
     k := "test with DOUBLE-QUOTES";
     j := 'test with SIMPLE QUOTES';
-    ch_sp_1 := "+!@#$%¨&&*()_|?][{~^<>}-Q";
-    ch_sp_2 := '+!@#$%¨&&*()_|?][{~^<>}-Q';
+    ch_sp_1 := "+!@#$%&&*()_|?][{~^<>}-Q";
+    ch_sp_2 := '+!@#$%&&*()_|?][{~^<>}-Q';
     bl_false := falso;
     bl_true := verdadeiro;
 
