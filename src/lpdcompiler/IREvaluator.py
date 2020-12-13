@@ -18,7 +18,7 @@ class IREvaluator:
         self.codegen.visit(self.tree)
 
         if llvmdump:
-            print("======== Unoptimized LLVM IR")
+            print("\n======== Unoptimized LLVM IR\n")
             print(str(self.codegen.module))
 
         # Convert LLVM IR into in-memory representation
@@ -33,18 +33,15 @@ class IREvaluator:
             pm.run(llvmmod)
 
             if llvmdump:
-                print("======== Optimized LLVM IR")
+                print("\n======== Optimized LLVM IR\n")
                 print(str(llvmmod))
 
-        # Create a MCJIT execution engine to JIT-compile the module. Note that
-        # ee takes ownership of target_machine, so it has to be recreated anew
-        # each time we call create_mcjit_compiler.
         target_machine = self.target.create_target_machine()
         with llvm.create_mcjit_compiler(llvmmod, target_machine) as ee:
             ee.finalize_object()
 
             if llvmdump:
-                print("======== Machine code")
+                print("\n======== Machine code\n")
                 print(target_machine.emit_assembly(llvmmod))
 
             fptr = CFUNCTYPE(c_double)(ee.get_function_address(self.codegen.func_name))

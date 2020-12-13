@@ -111,9 +111,10 @@ class SemanticHandler(NodeVisitor):
         self.visit(node.left)
         self.visit(node.right)
 
-        if node.right is not None and not isinstance(
-            node.right, (UnaryOperator, BinaryOperator)
-        ):
+        if node.right is not None and not isinstance(node.right, BinaryOperator):
+            while isinstance(node.right, UnaryOperator):
+                node.right = node.right.expression
+
             self.GLOBAL_MEMORY[node.left.value] = node.right.token.type
 
     def visit_Var(self, node: Var) -> None:

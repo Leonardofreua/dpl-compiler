@@ -202,8 +202,7 @@ class Handler(NodeVisitor):
             node (Writeln): content passed in the command escreva
         """
 
-        for content in node.content:
-            print(self.visit(content))
+        print(self.visit(node.content[0]))
 
     def visit_Empty(self, node: Empty) -> None:
         pass
