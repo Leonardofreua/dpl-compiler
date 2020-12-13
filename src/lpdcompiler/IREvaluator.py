@@ -26,26 +26,26 @@ class IREvaluator:
 
         # Optimize the module
         if optimize:
-            pmb = llvm.create_pass_manager_builder()
-            pmb.opt_level = 2
-            pm = llvm.create_module_pass_manager()
-            pmb.populate(pm)
-            pm.run(llvmmod)
+            pass_mger_builder = llvm.create_pass_manager_builder()
+            pass_mger_builder.opt_level = 2
+            module_pass_mger = llvm.create_module_pass_manager()
+            pass_mger_builder.populate(module_pass_mger)
+            module_pass_mger.run(llvmmod)
 
             if llvmdump:
                 print("\n======== Optimized LLVM IR\n")
                 print(str(llvmmod))
 
         target_machine = self.target.create_target_machine()
-        with llvm.create_mcjit_compiler(llvmmod, target_machine) as ee:
-            ee.finalize_object()
+        with llvm.create_mcjit_compiler(llvmmod, target_machine) as mcjit_c:
+            mcjit_c.finalize_object()
 
             if llvmdump:
                 print("\n======== Machine code\n")
                 print(target_machine.emit_assembly(llvmmod))
 
             fptr = CFUNCTYPE(c_double)(
-                ee.get_function_address(self.codegen.func_name))
+                mcjit_c.get_function_address(self.codegen.func_name))
 
             result = fptr()
             return result
