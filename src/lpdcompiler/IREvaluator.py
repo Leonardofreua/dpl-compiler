@@ -1,4 +1,6 @@
+import os
 import llvmlite.binding as llvm
+from typing import Any
 from ctypes import CFUNCTYPE, c_double
 
 from CodeGenerator import CodeGenerator
@@ -13,6 +15,23 @@ class IREvaluator:
         self.tree = tree
         self.codegen = CodeGenerator(symbol_table)
         self.target = llvm.Target.from_default_triple()
+
+    def _save_code(self, source_module: str, file_name: str, extension: str) -> None:
+        """Saves the generated code.
+
+        Args:
+            source_module (str): source code that will be saved
+            file_name (str): file name of the generated code
+            extension (str): extension file
+        """
+
+        dist_dir = f"{os.getcwd()}/dist"
+
+        if not os.path.exists(dist_dir):
+            os.mkdir(dist_dir)
+
+        with open(f"{os.path.join(dist_dir, file_name)}.{extension}", "w") as code:
+            code.write(source_module)
 
     def _optimize_module(self, optimize: bool, llvmdump: bool, source_module) -> None:
         """performs intermediate code level 2 optimization.
@@ -30,11 +49,14 @@ class IREvaluator:
             pass_mger_builder.populate(module_pass_mger)
             module_pass_mger.run(source_module)
 
+            str_source_module = str(source_module)
+            self._save_code(str_source_module, "_optz_ir_lpd", "ll")
+
             if llvmdump:
                 print("\n======== Optimized LLVM IR ========\n")
-                print(str(source_module))
+                print(str_source_module)
 
-    def evaluate(self, optimize: bool, llvmdump: bool):
+    def evaluate(self, optimize: bool, llvmdump: bool) -> Any:
         """Validates the AST already transformed into LLVM IR, calls the responsible
         method to optimize the code and turns it into Machine code.
 
@@ -46,9 +68,13 @@ class IREvaluator:
 
         self.codegen.visit(self.tree)
 
+        str_source_module = str(self.codegen.module)
+
         if llvmdump:
             print("\n======== Unoptimized LLVM IR ========\n")
-            print(str(self.codegen.module))
+            print(str_source_module)
+
+        self._save_code(str_source_module, "unoptz_ir_lpd", "ll")
 
         # Convert LLVM IR into in-memory representation
         llvmmod = llvm.parse_assembly(str(self.codegen.module))
@@ -60,9 +86,13 @@ class IREvaluator:
         with llvm.create_mcjit_compiler(llvmmod, target_machine) as mcjit_c:
             mcjit_c.finalize_object()
 
+            asm_code = target_machine.emit_assembly(llvmmod)
+
             if llvmdump:
                 print("\n======== Machine code ========\n")
-                print(target_machine.emit_assembly(llvmmod))
+                print(asm_code)
+
+            self._save_code(asm_code, "asm_lpd", "asm")
 
             fptr = CFUNCTYPE(c_double)(
                 mcjit_c.get_function_address(self.codegen.func_name)
