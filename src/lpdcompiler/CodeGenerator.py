@@ -78,8 +78,8 @@ class CodeGenerator(NodeVisitor):
         """Create a new Function instruction and attach it to a new Basic Block Entry.
 
         Args:
-            typ (str): [description]
-            is_printf (bool, optional): [description]. Defaults to False.
+            typ (str): node type.
+            is_printf (bool, optional): Defaults to False.
         """
 
         if is_printf or typ in ["String", "ArrayType"]:
@@ -188,10 +188,11 @@ class CodeGenerator(NodeVisitor):
         according to the operation.
 
         Args:
-            node (BinaryOperator): [description]
+            node (BinaryOperator): node containing the variables (or numbers) and the
+            arithmetic operators
 
         Returns:
-            Instruction: [description]
+            Instruction: LLVM arithmetic instruction
         """
 
         left = self.visit(node.left)
@@ -250,7 +251,8 @@ class CodeGenerator(NodeVisitor):
 
         content = node.value
         return Constant(
-            ArrayType(IntType(8), len(content)), bytearray(content.encode("utf8"))
+            ArrayType(IntType(8), len(content)), bytearray(
+                content.encode("utf8"))
         )
 
     def visit_Boolean(self, node: Boolean) -> Constant:
