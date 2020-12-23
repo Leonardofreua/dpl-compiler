@@ -44,10 +44,10 @@ class SymbolTable:
     def __init_builtins(self) -> None:
         """Initialize the primitive types."""
 
-        self.add_token(BuiltinTypeSymbol("INTEIRO"))
+        self.add_token(BuiltinTypeSymbol("INTEGER"))
         self.add_token(BuiltinTypeSymbol("REAL"))
         self.add_token(BuiltinTypeSymbol("STRING"))
-        self.add_token(BuiltinTypeSymbol("BOOLEANO"))
+        self.add_token(BuiltinTypeSymbol("BOOLEAN"))
 
     def add_token(self, symbol):  # type: (Union[BuiltinTypeSymbol, VarSymbol])-> None
         """Add a new symbol in the table.

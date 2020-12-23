@@ -62,7 +62,7 @@ class Handler(NodeVisitor):
         variables and compound declarations.
 
         Args:
-            node (Block): the block containing the VAR and INICIO sections
+            node (Block): the block containing the VAR and BEGIN sections
         """
 
         for declaration in node.declarations:
@@ -196,10 +196,10 @@ class Handler(NodeVisitor):
 
     def visit_Writeln(self, node: Writeln) -> None:
         """Prints content on the screen according to what was passed in the command
-        escreva.
+        writeln.
 
         Args:
-            node (Writeln): content passed in the command escreva
+            node (Writeln): content passed in the command writeln
         """
 
         print(self.visit(node.content[0]))
@@ -212,7 +212,7 @@ class Handler(NodeVisitor):
 
         Returns:
             Union[str, int]: results of the arithmetic operations the content present
-            in the command escreva.
+            in the command writeln.
         """
 
         tree = self.tree

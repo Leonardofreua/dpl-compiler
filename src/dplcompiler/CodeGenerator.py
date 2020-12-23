@@ -113,7 +113,7 @@ class CodeGenerator(NodeVisitor):
         variables and compound declarations.
 
         Args:
-            node (Block): the block containing the VAR and INICIO sections
+            node (Block): the block containing the VAR and BEGIN sections
         """
 
         for declaration in node.declarations:
@@ -251,8 +251,7 @@ class CodeGenerator(NodeVisitor):
 
         content = node.value
         return Constant(
-            ArrayType(IntType(8), len(content)), bytearray(
-                content.encode("utf8"))
+            ArrayType(IntType(8), len(content)), bytearray(content.encode("utf8"))
         )
 
     def visit_Boolean(self, node: Boolean) -> Constant:
@@ -272,11 +271,11 @@ class CodeGenerator(NodeVisitor):
             return Constant(IntType(1), 1)
 
     def visit_Writeln(self, node: Writeln) -> None:
-        """Converts the contents of the command escreva to LLVM ir code and adds the
+        """Converts the contents of the command writeln to LLVM ir code and adds the
         print call to the operating system.
 
         Args:
-            node (Writeln): content passed in the command escreva
+            node (Writeln): content passed in the command writeln
         """
 
         self.printf_counter += 1

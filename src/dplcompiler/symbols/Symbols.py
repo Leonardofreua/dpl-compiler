@@ -1,7 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Definition of symbols                         #
 #                                                                         #
-# Below are defined the types of symbols accepted by the LPD language     #
+# Below are defined the types of symbols accepted by the DPL language     #
 # (so far) together with their acceptance parameters.                     #
 #                                                                         #
 #                                                                         #
@@ -26,7 +26,7 @@ class BuiltinTypeSymbol(Symbol):
     """Primitive type stamp.
 
     Args:
-        name (str): primitive type name:INTEIRO,
+        name (str): primitive type name:INTEGER,
                                         REAL,
                                         STRING,
                                         BOOLEAN

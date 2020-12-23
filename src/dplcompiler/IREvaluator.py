@@ -50,7 +50,7 @@ class IREvaluator:
             module_pass_mger.run(source_module)
 
             str_source_module = str(source_module)
-            self._save_code(str_source_module, "_optz_ir_lpd", "ll")
+            self._save_code(str_source_module, "_optz_ir_dpl", "ll")
 
             if llvmdump:
                 print("\n======== Optimized LLVM IR ========\n")
@@ -74,7 +74,7 @@ class IREvaluator:
             print("\n======== Unoptimized LLVM IR ========\n")
             print(str_source_module)
 
-        self._save_code(str_source_module, "unoptz_ir_lpd", "ll")
+        self._save_code(str_source_module, "unoptz_ir_dpl", "ll")
 
         # Convert LLVM IR into in-memory representation
         llvmmod = llvm.parse_assembly(str(self.codegen.module))
@@ -92,7 +92,7 @@ class IREvaluator:
                 print("\n======== Machine code ========\n")
                 print(asm_code)
 
-            self._save_code(asm_code, "asm_lpd", "asm")
+            self._save_code(asm_code, "asm_dpl", "asm")
 
             fptr = CFUNCTYPE(c_double)(
                 mcjit_c.get_function_address(self.codegen.func_name)

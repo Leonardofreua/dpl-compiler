@@ -2,7 +2,7 @@
 #                                 List of token types                                     #
 #                                                                                         #
 # Below is the list of tokens and their respective types accepted by the current grammar  #
-# of the LPD language.                                                                    #
+# of the DPL language.                                                                    #
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                         #
@@ -45,18 +45,18 @@ class TokenType(Enum):
     LBRACE = "{"
     RBRACE = "}"
 
-    PROGRAM = "PROGRAMA"
-    INTEGER = "INTEIRO"
+    PROGRAM = "PROGRAM"
+    INTEGER = "INTEGER"
     STRING = "STRING"
-    BOOLEAN = "BOOLEANO"
-    TRUE = "VERDADEIRO"
-    FALSE = "FALSO"
+    BOOLEAN = "BOOLEAN"
+    TRUE = "TRUE"
+    FALSE = "FALSE"
     REAL = "REAL"
     INTEGER_DIV = "DIV"
     VAR = "VAR"
-    BEGIN = "INICIO"
-    WRITELN = "ESCREVA"
-    END = "FIM"
+    BEGIN = "BEGIN"
+    WRITELN = "WRITELN"
+    END = "END"
 
     ID = "ID"
     INTEGER_CONST = "INTEGER_CONST"

@@ -58,7 +58,7 @@ class SemanticHandler(NodeVisitor):
         visit_Compound method to handle with the compound statements (assigments).
 
         Args:
-            node (Block): the block containing the VAR and INICIO sections
+            node (Block): the block containing the VAR and BEGIN sections
         """
 
         for declaration in node.declarations:
@@ -242,7 +242,7 @@ class SemanticHandler(NodeVisitor):
         """Calls the methods according to content type and check if they are valid.
 
         Args:
-            node (Writeln): content passed in the command escreva
+            node (Writeln): content passed in the command writeln
         """
 
         for index, item in enumerate(node.content):

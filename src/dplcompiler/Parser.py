@@ -68,7 +68,7 @@ class Parser:
     def program(self) -> Program:
         """This object represents the program body.
 
-        Grammar: PROGRAMA ::=
+        Grammar: PROGRAM ::=
                     <variable> SEMI
                  BLOCK DOT
 
@@ -91,12 +91,12 @@ class Parser:
 
         Grammar: VAR ::=
                     <declarations>
-                 INICIO
+                 BEGIN
                     <compound_statement>
 
         Returns:
             Block: Contains the declaration of variables (VAR) and compound statement that
-            are within INICIO
+            are within BEGIN
         """
 
         declaration_nodes = self.declarations()
@@ -175,9 +175,9 @@ class Parser:
         return node
 
     def compound_statement(self) -> Compound:
-        """Assembles a list with all compound statements between INICIO and FIM.
+        """Assembles a list with all compound statements between BEGIN and END.
 
-        Grammar: <compound_statement> ::= INICIO <statement_list> FIM
+        Grammar: <compound_statement> ::= BEGIN <statement_list> END
 
         Returns:
             Compound: an object with a list containing all of compound statements
@@ -235,7 +235,7 @@ class Parser:
         return node
 
     def writeln_statement(self) -> Writeln:
-        """Assembles the 'escreva (Writeln)' command content.
+        """Assembles the 'writeln' command content.
 
         Grammar: <writeln_statement> ::= <content>
 

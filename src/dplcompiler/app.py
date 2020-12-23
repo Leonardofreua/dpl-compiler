@@ -26,21 +26,21 @@ from exceptions.error import ParserError, TokenizeError, SemanticError
 
 def set_cli():
     argparser = argparse.ArgumentParser(
-        prog="LPD Compiler", description="LPD Compiler."
+        prog="DPL Compiler", description="DPL Compiler."
     )
 
-    argparser.add_argument("sourcefile", help="LPD source file.")
-    argparser.add_argument("-sb", action="store_true",
-                           help="Display Symbol table content")
-    argparser.add_argument("-lt", action="store_true",
-                           help="Display the list of tokens")
-    argparser.add_argument("-optz", action="store_true", default=True,
-                           help="Optimize the LLVM IR code.")
-    argparser.add_argument("-llvmd", action="store_true",
-                           help="Display LLVM results")
-
+    argparser.add_argument("sourcefile", help="DPL source file.")
+    argparser.add_argument(
+        "-sb", action="store_true", help="Display Symbol table content"
+    )
+    argparser.add_argument(
+        "-lt", action="store_true", help="Display the list of tokens"
+    )
+    argparser.add_argument(
+        "-optz", action="store_true", default=True, help="Optimize the LLVM IR code."
+    )
+    argparser.add_argument("-llvmd", action="store_true", help="Display LLVM results")
     args = argparser.parse_args()
-
     return args
 
 

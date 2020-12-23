@@ -26,11 +26,11 @@ class Program(AST):
     """Represents 'program' keyword and will be the root of the tree.
 
     Args:
-        name (str): Program name that is declared after the keyword 'PROGRAMA'.
+        name (str): Program name that is declared after the keyword 'PROGRAM'.
         Example: ldp-program
 
         block (Block): The block object is compounded of declaration of variables (VAR)
-        and the assignments made within 'INICIO'
+        and the assignments made within 'BEGIN'
     """
 
     def __init__(self, name: str, block: "Block") -> None:
@@ -45,7 +45,7 @@ class Block(AST):
         declarations (VarDeclaration): object containing the declaration of variables list
 
         compound_statement (Compound): object with a list of compound instructions that
-        are between 'inicio' and 'fim'
+        are between 'BEGIN' and 'END'
     """
 
     def __init__(
@@ -151,15 +151,15 @@ class Boolean(AST):
         """Represents the BOOLEAN type of the AST
 
         Args:
-            token (Token): a specific token: Token(BOOLEAN, verdadeiro)
-            or Token(BOOLEAN, falso)
+            token (Token): a specific token: Token(BOOLEAN, TRUE)
+            or Token(BOOLEAN, FALSE)
         """
         self.token = token
         self.value = token.value
 
 
 class Compound(AST):
-    """Represents a 'programa ... fim' block."""
+    """Represents a 'program ... END' block."""
 
     def __init__(self) -> None:
         self.children: List["Assign"] = []
@@ -201,11 +201,11 @@ class Assign(AST):
 
 
 class Writeln(AST):
-    """Represents the 'escreva (Writeln)' command.
+    """Represents the 'writeln' command.
 
     Args:
         content (List[Union[Var, Num, String, Boolean, BinaryOperator, UnaryOperator, None]]):
-            the 'escreva (Writeln)' content
+            the 'writeln' content
     """
 
     def __init__(
