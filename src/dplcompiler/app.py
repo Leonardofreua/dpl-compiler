@@ -39,8 +39,7 @@ def set_cli():
     argparser.add_argument(
         "-optz", action="store_true", default=True, help="Optimize the LLVM IR code."
     )
-    argparser.add_argument("-llvmd", action="store_true",
-                           help="Display LLVM results")
+    argparser.add_argument("-llvmd", action="store_true", help="Display LLVM results")
     args = argparser.parse_args()
     return args
 
