@@ -1,9 +1,25 @@
-### Requirements:
-* Python 3.6+
+# DPL Compiler
 
-### Run compiler:
-* Navigate to the ``src/lpdcompiler/`` directory;
-* **python3 app.py <'LPD source file'>**
-  * **Example:** ``python3 app.py lpd_source_code/test.lpd``
+This compiler aims to demonstrate the construction of programming lannguage from scratch. The base language used is **Pascal**.
 
-**Obs:** Source code files don't necessarily have to be in the ``lpd_source_code/`` folder
+# Compiler Features
+
+* Lexer;
+* Parser;
+* Symbol Table;
+* Semantic Analysis;
+* Intermediate code Generation (IR) using LLVM;
+
+# Language Features
+
+* Primitive types: ``Bool, Real, Integer and String``;
+* Arithmetic Operations (Binary and Unary);
+* Command to print results on the screen (Writeln);
+
+# Installation
+
+Run ``pip install -r requirements.txt`` to install the **[llvmlite](https://github.com/numba/llvmlite)** dependecy;
+
+# Usage
+
+Go to the ``src/dplcompiler`` directory and Run ``python3 app.py <source_file.dpl>`` (There is an example in ``src/dplcompiler/dpl_source_code/``)
