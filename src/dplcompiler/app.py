@@ -39,7 +39,8 @@ def set_cli():
     argparser.add_argument(
         "-optz", action="store_true", default=True, help="Optimize the LLVM IR code."
     )
-    argparser.add_argument("-llvmd", action="store_true", help="Display LLVM results")
+    argparser.add_argument("-llvmd", action="store_true",
+                           help="Display LLVM results")
     args = argparser.parse_args()
     return args
 
@@ -69,7 +70,7 @@ def start():
 
         handler = Handler(tree)
         handler.handle()
-        evalutor = IREvaluator(tree, semantic_handler.symbol_table)
+        evalutor = IREvaluator(tree, semantic_handler.symbol_table, sourcefile)
         evalutor.evaluate(optimize=optimize_ir_code, llvmdump=show_llvm_result)
     except (ParserError, TokenizeError, SemanticError) as err:
         print(err.message)

@@ -4,17 +4,22 @@ from typing import Any
 from ctypes import CFUNCTYPE, c_double
 
 from CodeGenerator import CodeGenerator
+from AST import Program
+from symbols import SymbolTable
 
 
 class IREvaluator:
-    def __init__(self, tree, symbol_table) -> None:
+    def __init__(
+        self, tree: Program, symbol_table: SymbolTable, source_file: str
+    ) -> None:
         llvm.initialize()
         llvm.initialize_all_targets()
         llvm.initialize_all_asmprinters()
 
         self.tree = tree
         self.codegen = CodeGenerator(symbol_table)
-        self.target = llvm.Target.from_default_triple()
+        self.source_file = source_file
+        self.target = llvm.Target.from_triple(llvm.get_default_triple())
 
     def _save_code(self, source_module: str, file_name: str, extension: str) -> None:
         """Saves the generated code.
@@ -67,6 +72,8 @@ class IREvaluator:
         """
 
         self.codegen.visit(self.tree)
+        self.codegen.module.triple = self.target.triple
+        self.codegen.module.name = self.source_file
 
         str_source_module = str(self.codegen.module)
 
@@ -82,7 +89,8 @@ class IREvaluator:
         # Optimize the module
         self._optimize_module(optimize, llvmdump, llvmmod)
 
-        target_machine = self.target.create_target_machine()
+        cpu = llvm.get_host_cpu_name()
+        target_machine = self.target.create_target_machine(cpu)
         with llvm.create_mcjit_compiler(llvmmod, target_machine) as mcjit_c:
             mcjit_c.finalize_object()
 
