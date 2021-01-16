@@ -17,7 +17,7 @@
 
 from typing import List, Union
 
-from TokenType import TokenType
+from token_type import TokenType
 from AST import (
     Assign,
     BinaryOperator,
@@ -47,7 +47,7 @@ class Parser:
 
     def consume_token(self, token_type: TokenType) -> None:
         """Compare the current token type with the token_type parameter and if they match
-        then the current token is consumed and the next token is assigned to the 
+        then the current token is consumed and the next token is assigned to the
         current_token variable. Otherwise, an error of the type UNEXPECTED_TOKEN is displayed.
 
         Args:
@@ -301,11 +301,15 @@ class Parser:
         for index, item in enumerate(right_expressions):
             next_item = right_expressions[index - 1]
 
-            if item.token.type in [
-                TokenType.STRING_CONST,
-                TokenType.FALSE,
-                TokenType.TRUE,
-            ] and isinstance(next_item, (BinaryOperator, UnaryOperator)):
+            if (
+                item.token.type
+                in [
+                    TokenType.STRING_CONST,
+                    TokenType.FALSE,
+                    TokenType.TRUE,
+                ]
+                and isinstance(next_item, (BinaryOperator, UnaryOperator))
+            ):
                 return BinaryOperator(
                     left=item, operator=next_item.operator, right=next_item
                 )
@@ -345,7 +349,7 @@ class Parser:
                 | <variable>
 
         Returns:
-            Union[BinaryOperator, UnaryOperator, Num, Var, None]: This can be an 
+            Union[BinaryOperator, UnaryOperator, Num, Var, None]: This can be an
             UnaryOperator (Ex.: --3, 3 -- 5), a number (Ex.: 1, 2, ...)
                 or an BinaryOperator expression ((x + 7) * y)
         """
@@ -426,7 +430,7 @@ class Parser:
         Returns:
             Union[Num, BinaryOperator, UnaryOperator, Var, None]: a result assignment
             to a variable, this is can be a number, binary or unary operation or another
-            variable 
+            variable
         """
 
         node = self.term()

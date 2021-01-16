@@ -13,7 +13,7 @@
 
 from typing import Union, List
 
-from Token import Token
+from token import Token
 
 
 class AST:

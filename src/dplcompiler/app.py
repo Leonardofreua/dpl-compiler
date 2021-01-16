@@ -15,11 +15,11 @@
 import sys
 import argparse
 
-from Tokenizer import Tokenizer
-from Parser import Parser
-from Handler import Handler
-from SemanticHandler import SemanticHandler
-from IREvaluator import IREvaluator
+from tokenizer import Tokenizer
+from parser import Parser
+from handler import Handler
+from semantic_handler import SemanticHandler
+from IR_evaluator import IREvaluator
 
 from exceptions.error import ParserError, TokenizeError, SemanticError
 

@@ -13,7 +13,7 @@
 from typing import Union, Optional, Any
 from collections import OrderedDict
 
-from .Symbols import BuiltinTypeSymbol, VarSymbol
+from .symbols import BuiltinTypeSymbol, VarSymbol
 
 
 class SymbolTable:

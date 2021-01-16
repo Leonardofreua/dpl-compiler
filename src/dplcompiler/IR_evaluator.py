@@ -3,7 +3,7 @@ import llvmlite.binding as llvm
 from typing import Any
 from ctypes import CFUNCTYPE, c_double
 
-from CodeGenerator import CodeGenerator
+from code_generator import CodeGenerator
 from AST import Program
 from symbols import SymbolTable
 

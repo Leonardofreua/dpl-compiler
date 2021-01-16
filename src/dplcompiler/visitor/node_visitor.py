@@ -19,7 +19,7 @@ class NodeVisitor:
         """Visit each node of the tree and executes the corresponding method.
 
         Args:
-            node: a node represented by an object defined in class AST. 
+            node: a node represented by an object defined in class AST.
                 Examples: - Program
                           - Block
                           - VarDeclaration

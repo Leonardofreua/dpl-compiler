@@ -1,6 +1,5 @@
-from Token import Token
-from TokenType import TokenType
-from Context import Context
+from token_type import TokenType
+from context import Context
 from symbols import VarSymbol
 
 

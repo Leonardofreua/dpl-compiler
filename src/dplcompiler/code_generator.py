@@ -33,7 +33,7 @@ from llvmlite.ir import (
     Function,
 )
 
-from TokenType import TokenType
+from token_type import TokenType
 from visitor import NodeVisitor
 from symbols import VarSymbol
 from AST import (

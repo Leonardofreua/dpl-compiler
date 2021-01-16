@@ -17,7 +17,7 @@
 from typing import Union, Optional
 
 from visitor import NodeVisitor
-from TokenType import TokenType
+from token_type import TokenType
 from AST import (
     Program,
     Block,

@@ -1,2 +1,2 @@
-from .SymbolTable import SymbolTable
-from .Symbols import BuiltinTypeSymbol, VarSymbol
+from .symbol_table import SymbolTable
+from .symbols import BuiltinTypeSymbol, VarSymbol

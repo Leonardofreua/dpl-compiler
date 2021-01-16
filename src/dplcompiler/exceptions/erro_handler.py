@@ -1,6 +1,6 @@
 from typing import Union, NoReturn
 
-from Token import Token
+from token import Token
 from exceptions import ErrorCode, TokenizeError, ParserError, SemanticError
 
 

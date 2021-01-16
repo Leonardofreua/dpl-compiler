@@ -19,8 +19,8 @@
 
 from typing import Optional, List
 
-from Token import Token
-from TokenType import TokenType
+from token import Token
+from token_type import TokenType
 
 from exceptions import TokenizerErrorHandler
 

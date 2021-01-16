@@ -12,10 +12,10 @@
 #                                                                                         #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-from Context import Context
+from context import Context
 from symbols import SymbolTable, VarSymbol
-from TokenType import TokenType
-from TypeChecker import TypeChecker
+from token_type import TokenType
+from type_checker import TypeChecker
 from visitor import NodeVisitor
 from AST import (
     Program,
@@ -118,7 +118,7 @@ class SemanticHandler(NodeVisitor):
             self.GLOBAL_MEMORY[node.left.value] = node.right.token.type
 
     def visit_Var(self, node: Var) -> None:
-        """"Search the variable in the Symbol Table and verify if it exists, if not found
+        """ "Search the variable in the Symbol Table and verify if it exists, if not found
         shows an error stating has not been declared.
 
         Args:
